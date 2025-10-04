@@ -383,6 +383,9 @@ def analytics():
                     'count': {'$sum': 1},
                     'total_amount': {'$sum': '$total_amount'}
                 }
+            },
+            {
+                '$sort': {'total_amount': -1}
             }
         ]))
         
@@ -425,16 +428,25 @@ def analytics():
                     'tickets_sold': {
                         '$sum': '$bookings.num_tickets'
                     },
+                    'available_seats': {
+                        '$subtract': ['$total_seats', {'$sum': '$bookings.num_tickets'}]
+                    },
                     'occupancy_rate': {
-                        '$multiply': [
-                            {
-                                '$divide': [
-                                    {'$sum': '$bookings.num_tickets'},
-                                    '$total_seats'
+                        '$cond': {
+                            'if': {'$eq': ['$total_seats', 0]},
+                            'then': 0,
+                            'else': {
+                                '$multiply': [
+                                    {
+                                        '$divide': [
+                                            {'$sum': '$bookings.num_tickets'},
+                                            '$total_seats'
+                                        ]
+                                    },
+                                    100
                                 ]
-                            },
-                            100
-                        ]
+                            }
+                        }
                     }
                 }
             },
@@ -447,7 +459,7 @@ def analytics():
                     'total_seats': 1,
                     'available_seats': 1,
                     'tickets_sold': 1,
-                    'occupancy_rate': {'$round': ['$occupancy_rate', 2]}
+                    'occupancy_rate': {'$round': ['$occupancy_rate', 1]}
                 }
             },
             {
@@ -489,13 +501,18 @@ def analytics():
         # 6. Monthly Revenue Trend
         monthly_revenue = list(bookings_collection.aggregate([
             {
-                '$group': {
-                    '_id': {
+                '$addFields': {
+                    'month_year': {
                         '$dateToString': {
                             'format': '%Y-%m',
                             'date': '$booking_date'
                         }
-                    },
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': '$month_year',
                     'total_revenue': {'$sum': '$total_amount'},
                     'total_bookings': {'$sum': 1}
                 }
@@ -516,6 +533,7 @@ def analytics():
         
         return render_template('analytics.html', data=analytics_data)
     except Exception as e:
+        print(f"Analytics error: {str(e)}")
         flash(f'Error loading analytics: {str(e)}', 'error')
         return render_template('analytics.html', data={})
 
@@ -529,4 +547,4 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
