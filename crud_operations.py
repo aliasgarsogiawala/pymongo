@@ -1,6 +1,3 @@
-"""
-CRUD operations for the concert billing system.
-"""
 from typing import Dict, List, Optional
 from bson import ObjectId
 from pymongo.collection import Collection
@@ -10,10 +7,7 @@ from datetime import datetime
 from config import get_database, CONCERTS_COLLECTION, CUSTOMERS_COLLECTION, BOOKINGS_COLLECTION, INVOICES_COLLECTION
 from models import Concert, Customer, Booking, Invoice
 
-
 class ConcertCRUD:
-    """CRUD operations for concerts."""
-    
     def __init__(self):
         self.db = get_database()
         if self.db is None:
@@ -21,7 +15,6 @@ class ConcertCRUD:
         self.collection: Collection = self.db[CONCERTS_COLLECTION]
     
     def create_concert(self, concert: Concert) -> ObjectId:
-        """Create a new concert."""
         try:
             result = self.collection.insert_one(concert.to_dict())
             print(f"Concert created with ID: {result.inserted_id}")
@@ -31,7 +24,6 @@ class ConcertCRUD:
             raise
     
     def get_concert(self, concert_id: ObjectId) -> Optional[Concert]:
-        """Get a concert by ID."""
         try:
             doc = self.collection.find_one({"_id": concert_id})
             if doc:
@@ -42,7 +34,6 @@ class ConcertCRUD:
             return None
     
     def get_all_concerts(self) -> List[Concert]:
-        """Get all concerts."""
         try:
             docs = self.collection.find()
             return [Concert.from_dict(doc) for doc in docs]
@@ -51,7 +42,6 @@ class ConcertCRUD:
             return []
     
     def update_concert(self, concert_id: ObjectId, update_data: Dict) -> bool:
-        """Update a concert."""
         try:
             result = self.collection.update_one(
                 {"_id": concert_id},
@@ -68,7 +58,6 @@ class ConcertCRUD:
             return False
     
     def delete_concert(self, concert_id: ObjectId) -> bool:
-        """Delete a concert."""
         try:
             result = self.collection.delete_one({"_id": concert_id})
             if result.deleted_count > 0:
@@ -82,7 +71,6 @@ class ConcertCRUD:
             return False
     
     def update_available_seats(self, concert_id: ObjectId, seats_booked: int) -> bool:
-        """Update available seats for a concert."""
         try:
             result = self.collection.update_one(
                 {"_id": concert_id},
@@ -93,10 +81,7 @@ class ConcertCRUD:
             print(f"Error updating seats: {e}")
             return False
 
-
 class CustomerCRUD:
-    """CRUD operations for customers."""
-    
     def __init__(self):
         self.db = get_database()
         if self.db is None:
@@ -104,7 +89,6 @@ class CustomerCRUD:
         self.collection: Collection = self.db[CUSTOMERS_COLLECTION]
     
     def create_customer(self, customer: Customer) -> ObjectId:
-        """Create a new customer."""
         try:
             result = self.collection.insert_one(customer.to_dict())
             print(f"Customer created with ID: {result.inserted_id}")
@@ -114,7 +98,6 @@ class CustomerCRUD:
             raise
     
     def get_customer(self, customer_id: ObjectId) -> Optional[Customer]:
-        """Get a customer by ID."""
         try:
             doc = self.collection.find_one({"_id": customer_id})
             if doc:
@@ -125,7 +108,6 @@ class CustomerCRUD:
             return None
     
     def get_customer_by_email(self, email: str) -> Optional[Customer]:
-        """Get a customer by email."""
         try:
             doc = self.collection.find_one({"email": email})
             if doc:
@@ -136,7 +118,6 @@ class CustomerCRUD:
             return None
     
     def get_all_customers(self) -> List[Customer]:
-        """Get all customers."""
         try:
             docs = self.collection.find()
             return [Customer.from_dict(doc) for doc in docs]
@@ -145,7 +126,6 @@ class CustomerCRUD:
             return []
     
     def update_customer(self, customer_id: ObjectId, update_data: Dict) -> bool:
-        """Update a customer."""
         try:
             result = self.collection.update_one(
                 {"_id": customer_id},
@@ -162,7 +142,6 @@ class CustomerCRUD:
             return False
     
     def delete_customer(self, customer_id: ObjectId) -> bool:
-        """Delete a customer."""
         try:
             result = self.collection.delete_one({"_id": customer_id})
             if result.deleted_count > 0:
@@ -175,10 +154,7 @@ class CustomerCRUD:
             print(f"Error deleting customer: {e}")
             return False
 
-
 class BookingCRUD:
-    """CRUD operations for bookings."""
-    
     def __init__(self):
         self.db = get_database()
         if self.db is None:
@@ -186,7 +162,6 @@ class BookingCRUD:
         self.collection: Collection = self.db[BOOKINGS_COLLECTION]
     
     def create_booking(self, booking: Booking) -> ObjectId:
-        """Create a new booking."""
         try:
             result = self.collection.insert_one(booking.to_dict())
             print(f"Booking created with ID: {result.inserted_id}")
@@ -196,7 +171,6 @@ class BookingCRUD:
             raise
     
     def get_booking(self, booking_id: ObjectId) -> Optional[Booking]:
-        """Get a booking by ID."""
         try:
             doc = self.collection.find_one({"_id": booking_id})
             if doc:
@@ -207,7 +181,6 @@ class BookingCRUD:
             return None
     
     def get_bookings_by_customer(self, customer_id: ObjectId) -> List[Booking]:
-        """Get all bookings for a customer."""
         try:
             docs = self.collection.find({"customer_id": customer_id})
             return [Booking.from_dict(doc) for doc in docs]
@@ -216,7 +189,6 @@ class BookingCRUD:
             return []
     
     def get_bookings_by_concert(self, concert_id: ObjectId) -> List[Booking]:
-        """Get all bookings for a concert."""
         try:
             docs = self.collection.find({"concert_id": concert_id})
             return [Booking.from_dict(doc) for doc in docs]
@@ -225,7 +197,6 @@ class BookingCRUD:
             return []
     
     def get_all_bookings(self) -> List[Booking]:
-        """Get all bookings."""
         try:
             docs = self.collection.find()
             return [Booking.from_dict(doc) for doc in docs]
@@ -234,7 +205,6 @@ class BookingCRUD:
             return []
     
     def update_booking(self, booking_id: ObjectId, update_data: Dict) -> bool:
-        """Update a booking."""
         try:
             result = self.collection.update_one(
                 {"_id": booking_id},
@@ -251,11 +221,9 @@ class BookingCRUD:
             return False
     
     def cancel_booking(self, booking_id: ObjectId) -> bool:
-        """Cancel a booking."""
         return self.update_booking(booking_id, {"status": "cancelled"})
     
     def delete_booking(self, booking_id: ObjectId) -> bool:
-        """Delete a booking."""
         try:
             result = self.collection.delete_one({"_id": booking_id})
             if result.deleted_count > 0:
@@ -268,10 +236,7 @@ class BookingCRUD:
             print(f"Error deleting booking: {e}")
             return False
 
-
 class InvoiceCRUD:
-    """CRUD operations for invoices."""
-    
     def __init__(self):
         self.db = get_database()
         if self.db is None:
@@ -279,7 +244,6 @@ class InvoiceCRUD:
         self.collection: Collection = self.db[INVOICES_COLLECTION]
     
     def create_invoice(self, invoice: Invoice) -> ObjectId:
-        """Create a new invoice."""
         try:
             result = self.collection.insert_one(invoice.to_dict())
             print(f"Invoice created with ID: {result.inserted_id}")
@@ -289,7 +253,6 @@ class InvoiceCRUD:
             raise
     
     def get_invoice(self, invoice_id: ObjectId) -> Optional[Invoice]:
-        """Get an invoice by ID."""
         try:
             doc = self.collection.find_one({"_id": invoice_id})
             if doc:
@@ -300,7 +263,6 @@ class InvoiceCRUD:
             return None
     
     def get_invoice_by_booking(self, booking_id: ObjectId) -> Optional[Invoice]:
-        """Get an invoice by booking ID."""
         try:
             doc = self.collection.find_one({"booking_id": booking_id})
             if doc:
@@ -311,7 +273,6 @@ class InvoiceCRUD:
             return None
     
     def get_invoices_by_customer(self, customer_id: ObjectId) -> List[Invoice]:
-        """Get all invoices for a customer."""
         try:
             docs = self.collection.find({"customer_id": customer_id})
             return [Invoice.from_dict(doc) for doc in docs]
@@ -320,7 +281,6 @@ class InvoiceCRUD:
             return []
     
     def get_all_invoices(self) -> List[Invoice]:
-        """Get all invoices."""
         try:
             docs = self.collection.find()
             return [Invoice.from_dict(doc) for doc in docs]
@@ -329,7 +289,6 @@ class InvoiceCRUD:
             return []
     
     def update_invoice(self, invoice_id: ObjectId, update_data: Dict) -> bool:
-        """Update an invoice."""
         try:
             result = self.collection.update_one(
                 {"_id": invoice_id},
@@ -346,7 +305,6 @@ class InvoiceCRUD:
             return False
     
     def mark_paid(self, invoice_id: ObjectId, payment_date: datetime = None) -> bool:
-        """Mark an invoice as paid."""
         if payment_date is None:
             payment_date = datetime.now()
         
@@ -356,7 +314,6 @@ class InvoiceCRUD:
         })
     
     def delete_invoice(self, invoice_id: ObjectId) -> bool:
-        """Delete an invoice."""
         try:
             result = self.collection.delete_one({"_id": invoice_id})
             if result.deleted_count > 0:
