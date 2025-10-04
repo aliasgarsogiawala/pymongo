@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Bookings - Concert Booking System{% endblock %}
+
+{% block content %}
+<div class="bookings-page">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-ticket-alt"></i> Bookings Management
+        </h1>
+        <button class="btn btn-success" onclick="showAddModal()">
+            <i class="fas fa-plus"></i> New Booking
+        </button>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="table-container">
+        {% if bookings %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Concert</th>
+                    <th>Customer</th>
+                    <th>Contact</th>
+                    <th>Tickets</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td><code>{{ booking._id }}</code></td>
+                    <td>
+                        <strong>{{ booking.concert_details.name if booking.concert_details else 'N/A' }}</strong><br>
+                        <small>{{ booking.concert_details.artist if booking.concert_details else '' }}</small>
+                    </td>
+                    <td>{{ booking.customer_name }}</td>
+                    <td>
+                        <small>{{ booking.customer_email }}</small><br>
+                        <small>{{ booking.customer_phone }}</small>
+                    </td>
+                    <td>{{ booking.num_tickets }}</td>
+                    <td>${{ "%.2f"|format(booking.total_amount) }}</td>
+                    <td>
+                        <span class="status-badge status-{{ booking.status }}">
+                            {{ booking.status }}
+                        </span>
+                    </td>
+                    <td>{{ booking.booking_date.strftime('%Y-%m-%d') if booking.booking_date else 'N/A' }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editBooking('{{ booking._id }}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <form method="POST" action="{{ url_for('delete_booking', booking_id=booking._id) }}" style="display: inline;" onsubmit="return confirm('Cancel this booking?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>No bookings found</h3>
+            <p>Create your first booking to get started!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Booking Modal -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus"></i> New Booking</h2>
+            <span class="close" onclick="closeAddModal()">&times;</span>
+        </div>
+        <form method="POST" action="{{ url_for('add_booking') }}">
+            <div class="form-group">
+                <label>Select Concert *</label>
+                <select name="concert_id" required onchange="updateConcertInfo(this)">
+                    <option value="">-- Select Concert --</option>
+                    {% for concert in concerts %}
+                    <option value="{{ concert._id }}" 
+                            data-price="{{ concert.ticket_price }}" 
+                            data-seats="{{ concert.available_seats }}">
+                        {{ concert.name }} - {{ concert.artist }} ({{ concert.date }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="concertInfo" style="display: none;" class="info-box">
+                <p><strong>Available Seats:</strong> <span id="availableSeats"></span></p>
+                <p><strong>Ticket Price:</strong> $<span id="ticketPrice"></span></p>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Customer Name *</label>
+                    <input type="text" name="customer_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Customer Email *</label>
+                    <input type="email" name="customer_email" required>
+                </div>
+                <div class="form-group">
+                    <label>Customer Phone *</label>
+                    <input type="tel" name="customer_phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Number of Tickets *</label>
+                    <input type="number" name="num_tickets" id="numTickets" min="1" value="1" required onchange="calculateTotal()">
+                </div>
+            </div>
+            <div id="totalAmount" class="info-box" style="display: none;">
+                <h3>Total Amount: $<span id="totalValue">0.00</span></h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn btn-success">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Booking Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Edit Booking</h2>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form id="editForm" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Customer Name *</label>
+                    <input type="text" name="customer_name" id="edit_customer_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Customer Email *</label>
+                    <input type="email" name="customer_email" id="edit_customer_email" required>
+                </div>
+                <div class="form-group">
+                    <label>Customer Phone *</label>
+                    <input type="tel" name="customer_phone" id="edit_customer_phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Number of Tickets *</label>
+                    <input type="number" name="num_tickets" id="edit_num_tickets" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select name="status" id="edit_status" required>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentPrice = 0;
+
+    function showAddModal() {
+        document.getElementById('addModal').style.display = 'block';
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').style.display = 'none';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    function updateConcertInfo(select) {
+        const option = select.options[select.selectedIndex];
+        if (option.value) {
+            const price = option.getAttribute('data-price');
+            const seats = option.getAttribute('data-seats');
+            
+            document.getElementById('availableSeats').textContent = seats;
+            document.getElementById('ticketPrice').textContent = price;
+            document.getElementById('concertInfo').style.display = 'block';
+            
+            currentPrice = parseFloat(price);
+            calculateTotal();
+        } else {
+            document.getElementById('concertInfo').style.display = 'none';
+            document.getElementById('totalAmount').style.display = 'none';
+        }
+    }
+
+    function calculateTotal() {
+        const numTickets = parseInt(document.getElementById('numTickets').value) || 0;
+        const total = currentPrice * numTickets;
+        
+        document.getElementById('totalValue').textContent = total.toFixed(2);
+        document.getElementById('totalAmount').style.display = 'block';
+    }
+
+    function editBooking(bookingId) {
+        fetch(`/bookings/get/${bookingId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('edit_customer_name').value = data.customer_name;
+                document.getElementById('edit_customer_email').value = data.customer_email;
+                document.getElementById('edit_customer_phone').value = data.customer_phone;
+                document.getElementById('edit_num_tickets').value = data.num_tickets;
+                document.getElementById('edit_status').value = data.status;
+                
+                document.getElementById('editForm').action = `/bookings/edit/${bookingId}`;
+                document.getElementById('editModal').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Error loading booking data: ' + error);
+            });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const addModal = document.getElementById('addModal');
+        const editModal = document.getElementById('editModal');
+        if (event.target == addModal) {
+            closeAddModal();
+        }
+        if (event.target == editModal) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

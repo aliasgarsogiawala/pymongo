@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Concerts - Concert Booking System{% endblock %}
+
+{% block content %}
+<div class="concerts-page">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-guitar"></i> Concerts Management
+        </h1>
+        <button class="btn btn-primary" onclick="showAddModal()">
+            <i class="fas fa-plus"></i> Add Concert
+        </button>
+    </div>
+
+    <!-- Concerts Grid -->
+    <div class="concerts-grid">
+        {% if concerts %}
+            {% for concert in concerts %}
+            <div class="concert-card">
+                <div class="concert-header">
+                    <h3>{{ concert.name }}</h3>
+                    <span class="genre-badge">{{ concert.genre }}</span>
+                </div>
+                <div class="concert-body">
+                    <p class="concert-artist">
+                        <i class="fas fa-microphone"></i> {{ concert.artist }}
+                    </p>
+                    <p class="concert-venue">
+                        <i class="fas fa-map-marker-alt"></i> {{ concert.venue }}
+                    </p>
+                    <p class="concert-datetime">
+                        <i class="fas fa-calendar"></i> {{ concert.date }} at {{ concert.time }}
+                    </p>
+                    <p class="concert-description">{{ concert.description }}</p>
+                    <div class="concert-stats">
+                        <div class="stat">
+                            <span class="label">Price:</span>
+                            <span class="value">${{ "%.2f"|format(concert.ticket_price) }}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="label">Seats:</span>
+                            <span class="value">{{ concert.available_seats }}/{{ concert.total_seats }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="concert-actions">
+                    <button class="btn btn-sm btn-info" onclick="editConcert('{{ concert._id }}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <form method="POST" action="{{ url_for('delete_concert', concert_id=concert._id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this concert?');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-guitar"></i>
+                <h3>No concerts found</h3>
+                <p>Add your first concert to get started!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Concert Modal -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus"></i> Add New Concert</h2>
+            <span class="close" onclick="closeAddModal()">&times;</span>
+        </div>
+        <form method="POST" action="{{ url_for('add_concert') }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Concert Name *</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Artist *</label>
+                    <input type="text" name="artist" required>
+                </div>
+                <div class="form-group">
+                    <label>Venue *</label>
+                    <input type="text" name="venue" required>
+                </div>
+                <div class="form-group">
+                    <label>Genre *</label>
+                    <input type="text" name="genre" required>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <input type="time" name="time" required>
+                </div>
+                <div class="form-group">
+                    <label>Ticket Price ($) *</label>
+                    <input type="number" name="ticket_price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Seats *</label>
+                    <input type="number" name="total_seats" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Concert</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Concert Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Edit Concert</h2>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form id="editForm" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Concert Name *</label>
+                    <input type="text" name="name" id="edit_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Artist *</label>
+                    <input type="text" name="artist" id="edit_artist" required>
+                </div>
+                <div class="form-group">
+                    <label>Venue *</label>
+                    <input type="text" name="venue" id="edit_venue" required>
+                </div>
+                <div class="form-group">
+                    <label>Genre *</label>
+                    <input type="text" name="genre" id="edit_genre" required>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" name="date" id="edit_date" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <input type="time" name="time" id="edit_time" required>
+                </div>
+                <div class="form-group">
+                    <label>Ticket Price ($) *</label>
+                    <input type="number" name="ticket_price" id="edit_ticket_price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Seats *</label>
+                    <input type="number" name="total_seats" id="edit_total_seats" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" id="edit_description" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Concert</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showAddModal() {
+        document.getElementById('addModal').style.display = 'block';
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').style.display = 'none';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    function editConcert(concertId) {
+        fetch(`/concerts/get/${concertId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('edit_name').value = data.name;
+                document.getElementById('edit_artist').value = data.artist;
+                document.getElementById('edit_venue').value = data.venue;
+                document.getElementById('edit_genre').value = data.genre || '';
+                document.getElementById('edit_date').value = data.date;
+                document.getElementById('edit_time').value = data.time;
+                document.getElementById('edit_ticket_price').value = data.ticket_price;
+                document.getElementById('edit_total_seats').value = data.total_seats;
+                document.getElementById('edit_description').value = data.description || '';
+                
+                document.getElementById('editForm').action = `/concerts/edit/${concertId}`;
+                document.getElementById('editModal').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Error loading concert data: ' + error);
+            });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const addModal = document.getElementById('addModal');
+        const editModal = document.getElementById('editModal');
+        if (event.target == addModal) {
+            closeAddModal();
+        }
+        if (event.target == editModal) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

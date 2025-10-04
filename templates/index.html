@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Concert Booking System{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1 class="page-title">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+    </h1>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #3498db;">
+                <i class="fas fa-guitar"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Total Concerts</h3>
+                <p class="stat-number">{{ stats.total_concerts or 0 }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #2ecc71;">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Total Bookings</h3>
+                <p class="stat-number">{{ stats.total_bookings or 0 }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #f39c12;">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Total Revenue</h3>
+                <p class="stat-number">${{ "%.2f"|format(stats.total_revenue or 0) }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #9b59b6;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Upcoming Concerts</h3>
+                <p class="stat-number">{{ stats.upcoming_concerts or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('concerts') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Concert
+            </a>
+            <a href="{{ url_for('bookings') }}" class="btn btn-success">
+                <i class="fas fa-ticket-alt"></i> Create Booking
+            </a>
+            <a href="{{ url_for('analytics') }}" class="btn btn-info">
+                <i class="fas fa-chart-line"></i> View Analytics
+            </a>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h2><i class="fas fa-info-circle"></i> Welcome to Concert Booking System</h2>
+        <p>This system allows you to manage concerts, bookings, and view detailed analytics using MongoDB's powerful aggregation features.</p>
+        
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Create</h3>
+                <p>Add new concerts and bookings</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-eye"></i>
+                <h3>Read</h3>
+                <p>View all concerts and bookings</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-edit"></i>
+                <h3>Update</h3>
+                <p>Modify existing records</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-trash"></i>
+                <h3>Delete</h3>
+                <p>Remove concerts and bookings</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Aggregate</h3>
+                <p>Advanced analytics with MongoDB</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

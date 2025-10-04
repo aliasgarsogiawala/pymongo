@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Concert Booking System{% endblock %}
+
+{% block content %}
+<div class="analytics-page">
+    <h1 class="page-title">
+        <i class="fas fa-chart-bar"></i> Analytics Dashboard
+        <span class="subtitle">MongoDB Aggregation Functions</span>
+    </h1>
+
+    <!-- Revenue by Concert -->
+    <div class="analytics-section">
+        <h2><i class="fas fa-dollar-sign"></i> Revenue by Concert</h2>
+        <div class="table-container">
+            {% if data.revenue_by_concert %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Concert</th>
+                        <th>Artist</th>
+                        <th>Tickets Sold</th>
+                        <th>Total Bookings</th>
+                        <th>Total Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data.revenue_by_concert %}
+                    <tr>
+                        <td><strong>{{ item.concert_name }}</strong></td>
+                        <td>{{ item.artist }}</td>
+                        <td>{{ item.total_tickets_sold }}</td>
+                        <td>{{ item.total_bookings }}</td>
+                        <td class="revenue">${{ "%.2f"|format(item.total_revenue) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-data">No revenue data available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Concert Occupancy Rate -->
+    <div class="analytics-section">
+        <h2><i class="fas fa-chair"></i> Concert Occupancy Rates</h2>
+        <div class="table-container">
+            {% if data.concert_occupancy %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Concert</th>
+                        <th>Artist</th>
+                        <th>Venue</th>
+                        <th>Date</th>
+                        <th>Total Seats</th>
+                        <th>Sold</th>
+                        <th>Available</th>
+                        <th>Occupancy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for concert in data.concert_occupancy %}
+                    <tr>
+                        <td><strong>{{ concert.name }}</strong></td>
+                        <td>{{ concert.artist }}</td>
+                        <td>{{ concert.venue }}</td>
+                        <td>{{ concert.date }}</td>
+                        <td>{{ concert.total_seats }}</td>
+                        <td>{{ concert.tickets_sold }}</td>
+                        <td>{{ concert.available_seats }}</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ concert.occupancy_rate }}%">
+                                    {{ concert.occupancy_rate }}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-data">No occupancy data available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="two-column">
+        <!-- Top Customers -->
+        <div class="analytics-section">
+            <h2><i class="fas fa-users"></i> Top Customers</h2>
+            <div class="table-container">
+                {% if data.top_customers %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Bookings</th>
+                            <th>Tickets</th>
+                            <th>Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in data.top_customers %}
+                        <tr>
+                            <td>
+                                <strong>{{ customer.customer_name }}</strong><br>
+                                <small>{{ customer._id }}</small>
+                            </td>
+                            <td>{{ customer.total_bookings }}</td>
+                            <td>{{ customer.total_tickets }}</td>
+                            <td class="revenue">${{ "%.2f"|format(customer.total_spent) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="no-data">No customer data available</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bookings by Status -->
+        <div class="analytics-section">
+            <h2><i class="fas fa-list"></i> Bookings by Status</h2>
+            <div class="stats-list">
+                {% if data.bookings_by_status %}
+                    {% for status in data.bookings_by_status %}
+                    <div class="stat-item">
+                        <div class="stat-label">
+                            <span class="status-badge status-{{ status._id }}">{{ status._id }}</span>
+                        </div>
+                        <div class="stat-values">
+                            <div class="stat-value">
+                                <strong>{{ status.count }}</strong>
+                                <span>Bookings</span>
+                            </div>
+                            <div class="stat-value">
+                                <strong>${{ "%.2f"|format(status.total_amount) }}</strong>
+                                <span>Revenue</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="no-data">No status data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue by Genre -->
+    <div class="analytics-section">
+        <h2><i class="fas fa-music"></i> Revenue by Genre</h2>
+        <div class="genre-cards">
+            {% if data.revenue_by_genre %}
+                {% for genre in data.revenue_by_genre %}
+                <div class="genre-card">
+                    <h3>{{ genre._id or 'Unspecified' }}</h3>
+                    <div class="genre-stats">
+                        <div class="genre-stat">
+                            <span class="label">Revenue</span>
+                            <span class="value">${{ "%.2f"|format(genre.total_revenue) }}</span>
+                        </div>
+                        <div class="genre-stat">
+                            <span class="label">Bookings</span>
+                            <span class="value">{{ genre.total_bookings }}</span>
+                        </div>
+                        <div class="genre-stat">
+                            <span class="label">Avg Price</span>
+                            <span class="value">${{ "%.2f"|format(genre.avg_ticket_price) }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p class="no-data">No genre data available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Monthly Revenue Trend -->
+    <div class="analytics-section">
+        <h2><i class="fas fa-chart-line"></i> Monthly Revenue Trend</h2>
+        <div class="table-container">
+            {% if data.monthly_revenue %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Total Bookings</th>
+                        <th>Total Revenue</th>
+                        <th>Avg per Booking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in data.monthly_revenue %}
+                    <tr>
+                        <td><strong>{{ month._id }}</strong></td>
+                        <td>{{ month.total_bookings }}</td>
+                        <td class="revenue">${{ "%.2f"|format(month.total_revenue) }}</td>
+                        <td>${{ "%.2f"|format(month.total_revenue / month.total_bookings) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-data">No monthly data available</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
