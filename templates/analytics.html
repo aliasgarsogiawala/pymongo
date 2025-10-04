@@ -9,6 +9,18 @@
         <span class="subtitle">MongoDB Aggregation Functions</span>
     </h1>
 
+    <!-- Search Bar for Analytics -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchAnalytics" placeholder="Search analytics data by concert, artist, or customer..." 
+                   oninput="searchAnalytics()" autocomplete="off">
+            <button class="search-clear" id="clearAnalyticsSearch" onclick="clearAnalyticsSearch()" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Revenue by Concert -->
     <div class="analytics-section">
         <h2><i class="fas fa-dollar-sign"></i> Revenue by Concert</h2>
@@ -213,4 +225,89 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Search functionality for analytics
+    function searchAnalytics() {
+        const searchTerm = document.getElementById('searchAnalytics').value.toLowerCase().trim();
+        const clearButton = document.getElementById('clearAnalyticsSearch');
+        
+        // Show/hide clear button
+        clearButton.style.display = searchTerm ? 'block' : 'none';
+        
+        // Search in all data tables
+        const tables = document.querySelectorAll('.data-table');
+        tables.forEach(table => {
+            const rows = table.querySelectorAll('tbody tr');
+            let visibleInTable = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let rowText = '';
+                cells.forEach(cell => {
+                    rowText += cell.textContent.toLowerCase() + ' ';
+                });
+                
+                if (rowText.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleInTable++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show/hide table section based on visible rows
+            const section = table.closest('.analytics-section');
+            if (searchTerm && visibleInTable === 0) {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+            }
+        });
+        
+        // Search in genre cards
+        const genreCards = document.querySelectorAll('.genre-card');
+        let visibleCards = 0;
+        genreCards.forEach(card => {
+            const cardText = card.textContent.toLowerCase();
+            if (cardText.includes(searchTerm)) {
+                card.style.display = 'block';
+                visibleCards++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Show/hide genre section
+        if (genreCards.length > 0) {
+            const genreSection = genreCards[0].closest('.analytics-section');
+            if (searchTerm && visibleCards === 0) {
+                genreSection.style.display = 'none';
+            } else {
+                genreSection.style.display = 'block';
+            }
+        }
+    }
+    
+    function clearAnalyticsSearch() {
+        document.getElementById('searchAnalytics').value = '';
+        document.getElementById('clearAnalyticsSearch').style.display = 'none';
+        
+        // Show all sections and rows
+        const sections = document.querySelectorAll('.analytics-section');
+        sections.forEach(section => {
+            section.style.display = 'block';
+        });
+        
+        const rows = document.querySelectorAll('.data-table tbody tr');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        
+        const genreCards = document.querySelectorAll('.genre-card');
+        genreCards.forEach(card => {
+            card.style.display = 'block';
+        });
+    }
+</script>
 {% endblock %}

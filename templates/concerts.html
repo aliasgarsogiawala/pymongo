@@ -13,6 +13,18 @@
         </button>
     </div>
 
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search concerts by name, artist, or venue..." 
+                   oninput="searchConcerts()" autocomplete="off">
+            <button class="search-clear" id="clearSearch" onclick="clearSearch()" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Concerts Grid -->
     <div class="concerts-grid">
         {% if concerts %}
@@ -208,6 +220,74 @@
             .catch(error => {
                 alert('Error loading concert data: ' + error);
             });
+    }
+
+    // Search functionality
+    function searchConcerts() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const concertCards = document.querySelectorAll('.concert-card');
+        const clearButton = document.getElementById('clearSearch');
+        
+        // Show/hide clear button
+        clearButton.style.display = searchTerm ? 'block' : 'none';
+        
+        let visibleCount = 0;
+        
+        concertCards.forEach(card => {
+            const concertName = card.querySelector('h3').textContent.toLowerCase();
+            const artist = card.querySelector('.concert-artist').textContent.toLowerCase();
+            const venue = card.querySelector('.concert-venue').textContent.toLowerCase();
+            const genre = card.querySelector('.genre-badge').textContent.toLowerCase();
+            
+            const isMatch = concertName.includes(searchTerm) || 
+                           artist.includes(searchTerm) || 
+                           venue.includes(searchTerm) ||
+                           genre.includes(searchTerm);
+            
+            if (isMatch) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Show/hide no results message
+        showNoResultsMessage(visibleCount === 0 && searchTerm.length > 0);
+    }
+    
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        const concertCards = document.querySelectorAll('.concert-card');
+        const clearButton = document.getElementById('clearSearch');
+        
+        clearButton.style.display = 'none';
+        
+        concertCards.forEach(card => {
+            card.style.display = 'block';
+        });
+        
+        showNoResultsMessage(false);
+    }
+    
+    function showNoResultsMessage(show) {
+        let noResultsMsg = document.getElementById('noResultsMessage');
+        
+        if (show && !noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.id = 'noResultsMessage';
+            noResultsMsg.className = 'no-results-message';
+            noResultsMsg.innerHTML = `
+                <div class="no-results-content">
+                    <i class="fas fa-search"></i>
+                    <h3>No concerts found</h3>
+                    <p>Try adjusting your search terms</p>
+                </div>
+            `;
+            document.querySelector('.concerts-grid').appendChild(noResultsMsg);
+        } else if (!show && noResultsMsg) {
+            noResultsMsg.remove();
+        }
     }
 
     // Close modal when clicking outside

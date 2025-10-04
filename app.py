@@ -55,7 +55,12 @@ def index():
         return render_template('index.html', stats=stats)
     except Exception as e:
         flash(f'Error loading dashboard: {str(e)}', 'error')
-        return render_template('index.html', stats={})
+        return render_template('index.html', stats={
+            'total_concerts': 0,
+            'total_bookings': 0,
+            'total_revenue': 0,
+            'upcoming_concerts': 0
+        })
 
 # ==================== CONCERTS CRUD ====================
 @app.route('/concerts')

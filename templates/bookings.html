@@ -13,6 +13,18 @@
         </button>
     </div>
 
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchBookings" placeholder="Search bookings by customer name, email, or concert..." 
+                   oninput="searchBookings()" autocomplete="off">
+            <button class="search-clear" id="clearBookingSearch" onclick="clearBookingSearch()" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Bookings Table -->
     <div class="table-container">
         {% if bookings %}
@@ -230,6 +242,79 @@
             .catch(error => {
                 alert('Error loading booking data: ' + error);
             });
+    }
+
+    // Search functionality for bookings
+    function searchBookings() {
+        const searchTerm = document.getElementById('searchBookings').value.toLowerCase().trim();
+        const bookingRows = document.querySelectorAll('.data-table tbody tr');
+        const clearButton = document.getElementById('clearBookingSearch');
+        
+        // Show/hide clear button
+        clearButton.style.display = searchTerm ? 'block' : 'none';
+        
+        let visibleCount = 0;
+        
+        bookingRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 0) {
+                const bookingId = cells[0].textContent.toLowerCase();
+                const concert = cells[1].textContent.toLowerCase();
+                const customer = cells[2].textContent.toLowerCase();
+                const contact = cells[3].textContent.toLowerCase();
+                const status = cells[6].textContent.toLowerCase();
+                
+                const isMatch = bookingId.includes(searchTerm) || 
+                               concert.includes(searchTerm) || 
+                               customer.includes(searchTerm) ||
+                               contact.includes(searchTerm) ||
+                               status.includes(searchTerm);
+                
+                if (isMatch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+        
+        // Show/hide no results message
+        showBookingNoResultsMessage(visibleCount === 0 && searchTerm.length > 0);
+    }
+    
+    function clearBookingSearch() {
+        document.getElementById('searchBookings').value = '';
+        const bookingRows = document.querySelectorAll('.data-table tbody tr');
+        const clearButton = document.getElementById('clearBookingSearch');
+        
+        clearButton.style.display = 'none';
+        
+        bookingRows.forEach(row => {
+            row.style.display = '';
+        });
+        
+        showBookingNoResultsMessage(false);
+    }
+    
+    function showBookingNoResultsMessage(show) {
+        let noResultsMsg = document.getElementById('bookingNoResultsMessage');
+        
+        if (show && !noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.id = 'bookingNoResultsMessage';
+            noResultsMsg.className = 'no-results-message';
+            noResultsMsg.innerHTML = `
+                <div class="no-results-content">
+                    <i class="fas fa-search"></i>
+                    <h3>No bookings found</h3>
+                    <p>Try adjusting your search terms</p>
+                </div>
+            `;
+            document.querySelector('.table-container').insertAdjacentElement('afterend', noResultsMsg);
+        } else if (!show && noResultsMsg) {
+            noResultsMsg.remove();
+        }
     }
 
     // Close modal when clicking outside
