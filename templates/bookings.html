@@ -44,7 +44,7 @@
                         <small>{{ booking.customer_phone }}</small>
                     </td>
                     <td>{{ booking.num_tickets }}</td>
-                    <td>${{ "%.2f"|format(booking.total_amount) }}</td>
+                    <td>₹{{ "%.2f"|format(booking.total_amount) }}</td>
                     <td>
                         <span class="status-badge status-{{ booking.status }}">
                             {{ booking.status }}
@@ -98,7 +98,7 @@
             </div>
             <div id="concertInfo" style="display: none;" class="info-box">
                 <p><strong>Available Seats:</strong> <span id="availableSeats"></span></p>
-                <p><strong>Ticket Price:</strong> $<span id="ticketPrice"></span></p>
+                <p><strong>Ticket Price:</strong> ₹<span id="ticketPrice"></span></p>
             </div>
             <div class="form-grid">
                 <div class="form-group">
@@ -119,7 +119,7 @@
                 </div>
             </div>
             <div id="totalAmount" class="info-box" style="display: none;">
-                <h3>Total Amount: $<span id="totalValue">0.00</span></h3>
+                <h3>Total Amount: ₹<span id="totalValue">0.00</span></h3>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>

@@ -31,7 +31,7 @@
                         <td>{{ item.artist }}</td>
                         <td>{{ item.total_tickets_sold }}</td>
                         <td>{{ item.total_bookings }}</td>
-                        <td class="revenue">${{ "%.2f"|format(item.total_revenue) }}</td>
+                        <td class="revenue">₹{{ "%.2f"|format(item.total_revenue) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -112,7 +112,7 @@
                             </td>
                             <td>{{ customer.total_bookings }}</td>
                             <td>{{ customer.total_tickets }}</td>
-                            <td class="revenue">${{ "%.2f"|format(customer.total_spent) }}</td>
+                            <td class="revenue">₹{{ "%.2f"|format(customer.total_spent) }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -139,7 +139,7 @@
                                 <span>Bookings</span>
                             </div>
                             <div class="stat-value">
-                                <strong>${{ "%.2f"|format(status.total_amount) }}</strong>
+                                <strong>₹{{ "%.2f"|format(status.total_amount) }}</strong>
                                 <span>Revenue</span>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                     <div class="genre-stats">
                         <div class="genre-stat">
                             <span class="label">Revenue</span>
-                            <span class="value">${{ "%.2f"|format(genre.total_revenue) }}</span>
+                            <span class="value">₹{{ "%.2f"|format(genre.total_revenue) }}</span>
                         </div>
                         <div class="genre-stat">
                             <span class="label">Bookings</span>
@@ -171,7 +171,7 @@
                         </div>
                         <div class="genre-stat">
                             <span class="label">Avg Price</span>
-                            <span class="value">${{ "%.2f"|format(genre.avg_ticket_price) }}</span>
+                            <span class="value">₹{{ "%.2f"|format(genre.avg_ticket_price) }}</span>
                         </div>
                     </div>
                 </div>
@@ -201,8 +201,8 @@
                     <tr>
                         <td><strong>{{ month._id }}</strong></td>
                         <td>{{ month.total_bookings }}</td>
-                        <td class="revenue">${{ "%.2f"|format(month.total_revenue) }}</td>
-                        <td>${{ "%.2f"|format(month.total_revenue / month.total_bookings) }}</td>
+                        <td class="revenue">₹{{ "%.2f"|format(month.total_revenue) }}</td>
+                        <td>₹{{ "%.2f"|format(month.total_revenue / month.total_bookings) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

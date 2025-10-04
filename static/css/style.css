@@ -809,6 +809,18 @@ body {
     margin-top: 3rem;
 }
 
+.footer .watermark {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #bdc3c7;
+    font-style: italic;
+}
+
+.footer .watermark strong {
+    color: #3498db;
+    font-weight: 600;
+}
+
 /* ============================================
    Responsive Design
    ============================================ */

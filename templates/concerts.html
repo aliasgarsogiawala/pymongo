@@ -36,7 +36,7 @@
                     <div class="concert-stats">
                         <div class="stat">
                             <span class="label">Price:</span>
-                            <span class="value">${{ "%.2f"|format(concert.ticket_price) }}</span>
+                            <span class="value">₹{{ "%.2f"|format(concert.ticket_price) }}</span>
                         </div>
                         <div class="stat">
                             <span class="label">Seats:</span>
@@ -99,10 +99,9 @@
                     <label>Time *</label>
                     <input type="time" name="time" required>
                 </div>
-                <div class="form-group">
-                    <label>Ticket Price ($) *</label>
-                    <input type="number" name="ticket_price" step="0.01" min="0" required>
-                </div>
+                                <div class="form-group">
+                    <label>Ticket Price (₹) *</label>
+                    <input type="number" name="ticket_price" step="0.01" min="0" id="editTicketPrice" required>
                 <div class="form-group">
                     <label>Total Seats *</label>
                     <input type="number" name="total_seats" min="1" required>

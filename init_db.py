@@ -56,81 +56,81 @@ def init_database():
         
         sample_concerts = [
             {
-                'name': 'Summer Rock Festival 2025',
-                'artist': 'The Rock Legends',
-                'venue': 'Madison Square Garden',
+                'name': 'Bollywood Nights Mumbai',
+                'artist': 'Arijit Singh',
+                'venue': 'Jio Garden, Mumbai',
                 'date': (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d'),
                 'time': '19:00',
-                'ticket_price': 125.00,
+                'ticket_price': 8500.00,  # ₹8,500
                 'total_seats': 500,
                 'available_seats': 500,
-                'genre': 'Rock',
-                'description': 'An epic night of rock music featuring legendary performers',
+                'genre': 'Bollywood',
+                'description': 'Magical evening with Bollywood\'s most beloved playback singer',
                 'created_at': datetime.now()
             },
             {
-                'name': 'Jazz Night Under Stars',
-                'artist': 'The Smooth Jazz Quartet',
-                'venue': 'Blue Note Jazz Club',
+                'name': 'Classical Raag Darbar',
+                'artist': 'Ustad Zakir Hussain',
+                'venue': 'Nehru Centre, Mumbai',
                 'date': (datetime.now() + timedelta(days=15)).strftime('%Y-%m-%d'),
                 'time': '20:00',
-                'ticket_price': 85.00,
+                'ticket_price': 6000.00,  # ₹6,000
                 'total_seats': 200,
                 'available_seats': 200,
-                'genre': 'Jazz',
-                'description': 'Intimate jazz performance in a cozy club setting',
+                'genre': 'Classical',
+                'description': 'Mesmerizing tabla performance by the legendary maestro',
                 'created_at': datetime.now()
             },
             {
-                'name': 'Electronic Dance Extravaganza',
-                'artist': 'DJ Pulse & Friends',
-                'venue': 'Electric Arena',
+                'name': 'Punjabi Folk Festival',
+                'artist': 'Diljit Dosanjh',
+                'venue': 'Thyagaraj Stadium, Delhi',
                 'date': (datetime.now() + timedelta(days=45)).strftime('%Y-%m-%d'),
-                'time': '21:00',
-                'ticket_price': 95.00,
+                'time': '18:30',
+                'ticket_price': 12000.00,  # ₹12,000
                 'total_seats': 1000,
                 'available_seats': 1000,
-                'genre': 'Electronic',
-                'description': 'All-night EDM party with top international DJs',
+                'genre': 'Punjabi',
+                'description': 'High-energy Punjabi music and dance celebration',
                 'created_at': datetime.now()
             },
             {
-                'name': 'Classical Symphony Evening',
-                'artist': 'Metropolitan Orchestra',
-                'venue': 'Concert Hall',
+                'name': 'Carnatic Music Concert',
+                'artist': 'T.M. Krishna',
+                'venue': 'Music Academy, Chennai',
                 'date': (datetime.now() + timedelta(days=20)).strftime('%Y-%m-%d'),
-                'time': '18:30',
-                'ticket_price': 150.00,
+                'time': '18:00',
+                'ticket_price': 4500.00,  # ₹4,500
                 'total_seats': 300,
                 'available_seats': 300,
-                'genre': 'Classical',
-                'description': 'Beautiful classical music performed by world-class musicians',
+                'genre': 'Carnatic',
+                'description': 'Traditional South Indian classical music performance',
                 'created_at': datetime.now()
             },
             {
-                'name': 'Hip Hop Showcase 2025',
-                'artist': 'MC Flow & The Beat Squad',
-                'venue': 'Urban Stage',
+                'name': 'Sufi Night Bangalore',
+                'artist': 'Kailash Kher',
+                'venue': 'Palace Grounds, Bangalore',
                 'date': (datetime.now() + timedelta(days=60)).strftime('%Y-%m-%d'),
-                'time': '20:30',
-                'ticket_price': 75.00,
+                'time': '19:30',
+                'ticket_price': 7500.00,  # ₹7,500
                 'total_seats': 400,
                 'available_seats': 400,
-                'genre': 'Hip Hop',
-                'description': 'The hottest hip hop artists performing live',
+                'genre': 'Sufi',
+                'description': 'Soulful Sufi music that touches the heart and soul',
                 'created_at': datetime.now()
             },
             {
-                'name': 'Country Music Festival',
-                'artist': 'Nashville Stars',
-                'venue': 'Outdoor Amphitheater',
+                'name': 'Indie Rock Kolkata',
+                'artist': 'Parikrama',
+                'venue': 'Netaji Indoor Stadium, Kolkata',
                 'date': (datetime.now() + timedelta(days=50)).strftime('%Y-%m-%d'),
-                'time': '17:00',
-                'ticket_price': 65.00,
+                'time': '20:00',
+                'ticket_price': 5500.00,  # ₹5,500
                 'total_seats': 600,
                 'available_seats': 600,
-                'genre': 'Country',
-                'description': 'Authentic country music under the open sky',
+                'genre': 'Rock',
+                'description': 'India\'s premier rock band performing their greatest hits',
                 'created_at': datetime.now()
             }
         ]
@@ -143,11 +143,11 @@ def init_database():
         
         concerts = list(db.concerts.find())
         sample_customers = [
-            {'name': 'John Doe', 'email': 'john.doe@example.com', 'phone': '555-0101'},
-            {'name': 'Jane Smith', 'email': 'jane.smith@example.com', 'phone': '555-0102'},
-            {'name': 'Bob Johnson', 'email': 'bob.johnson@example.com', 'phone': '555-0103'},
-            {'name': 'Alice Williams', 'email': 'alice.williams@example.com', 'phone': '555-0104'},
-            {'name': 'Charlie Brown', 'email': 'charlie.brown@example.com', 'phone': '555-0105'},
+            {'name': 'Rajesh Kumar', 'email': 'rajesh.kumar@example.com', 'phone': '+91-9876543210'},
+            {'name': 'Priya Sharma', 'email': 'priya.sharma@example.com', 'phone': '+91-9876543211'},
+            {'name': 'Amit Patel', 'email': 'amit.patel@example.com', 'phone': '+91-9876543212'},
+            {'name': 'Sneha Reddy', 'email': 'sneha.reddy@example.com', 'phone': '+91-9876543213'},
+            {'name': 'Vikram Singh', 'email': 'vikram.singh@example.com', 'phone': '+91-9876543214'},
         ]
         
         sample_bookings = []

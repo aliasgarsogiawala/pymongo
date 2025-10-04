@@ -1,6 +1,7 @@
 # 🎵 Concert Booking System
+**Built by Aliasgar Sogiawala** 🚀
 
-A full-featured concert booking web application built with Flask and MongoDB, implementing complete CRUD operations and advanced MongoDB aggregation functions.
+A full-featured Indian concert booking web application built with Flask and MongoDB, implementing complete CRUD operations and advanced MongoDB aggregation functions. Features authentic Indian artists, venues, and pricing in Indian Rupees (₹).
 
 ## ✨ Features
 

@@ -1,6 +1,7 @@
-# Concert Billing System
+# 🎵 Concert Booking System
+**Built by Aliasgar Sogiawala** 🚀
 
-A comprehensive concert billing system built with Python and MongoDB that demonstrates CRUD operations and aggregation functions for managing concerts, customers, bookings, and invoices.
+A comprehensive Indian concert booking system built with Python and MongoDB that demonstrates CRUD operations and aggregation functions for managing concerts, customers, bookings, and invoices. Features authentic Indian artists and venues with pricing in Indian Rupees (₹).
 
 ## Features
 
