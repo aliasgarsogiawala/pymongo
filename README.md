@@ -1,188 +1,320 @@
 # 🎵 Concert Booking System
-**Built by Aliasgar Sogiawala** 🚀
+**Built by Aliasgar Sogiawala** 
 
-A comprehensive Indian concert booking system built with Python and MongoDB that demonstrates CRUD operations and aggregation functions for managing concerts, customers, bookings, and invoices. Features authentic Indian artists and venues with pricing in Indian Rupees (₹).
+A full-featured Indian concert booking web application built with Flask and MongoDB, implementing complete CRUD operations and advanced MongoDB aggregation functions. Features authentic Indian artists, venues, and pricing in Indian Rupees (₹).
 
-## Features
+## ✨ Features
 
-### Core Functionality
-- **Concert Management**: Create, read, update, and delete concert events
-- **Customer Management**: Handle customer information and profiles
-- **Booking System**: Process ticket bookings with different types and pricing
-- **Invoice Generation**: Automatic billing with tax calculations and payment tracking
+### CRUD Operations
+- **Create**: Add new concerts and bookings
+- **Read**: View all concerts, bookings, and detailed analytics
+- **Update**: Edit concert details and booking information
+- **Delete**: Remove concerts and cancel bookings
 
-### MongoDB Operations
-- **CRUD Operations**: Complete Create, Read, Update, Delete functionality for all entities
-- **Advanced Aggregations**: Complex analytical queries for business insights
-- **Data Relationships**: Proper linking between concerts, customers, bookings, and invoices
+### MongoDB Aggregation Functions
+- **Revenue by Concert**: Total revenue and tickets sold per concert
+- **Concert Occupancy Rates**: Real-time seat availability and occupancy percentages
+- **Top Customers**: Rankings by total spend and number of bookings
+- **Bookings by Status**: Breakdown of confirmed, pending, and cancelled bookings
+- **Revenue by Genre**: Revenue analysis grouped by music genre
+- **Monthly Revenue Trends**: Time-series analysis of booking patterns
 
-### Analytics & Reporting
-- Revenue analysis by concert, venue, and time period
-- Customer behavior and spending statistics
-- Popular concert tracking and ticket distribution
-- Payment status monitoring and financial reporting
+### Modern UI
+- Responsive design that works on desktop, tablet, and mobile
+- Beautiful gradient navigation and card-based layouts
+- Real-time form validation and dynamic calculations
+- Modal dialogs for create/edit operations
+- Flash messages for user feedback
 
-## Project Structure
+## 🛠️ Technology Stack
 
-```
-pymongo/
-├── README.md                 # Project documentation
-├── requirements.txt          # Python dependencies
-├── config.py                # Database configuration
-├── models.py                # Data models (Concert, Customer, Booking, Invoice)
-├── crud_operations.py       # CRUD operations for all models
-├── analytics.py             # MongoDB aggregation functions
-├── main.py                  # Main application demonstrating functionality
-└── test_billing_system.py   # Basic test suite
-```
+- **Backend**: Flask 3.0.0
+- **Database**: MongoDB Atlas
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Python Libraries**:
+  - `pymongo[srv]` - MongoDB driver
+  - `python-dotenv` - Environment variable management
+  - `flask-cors` - Cross-origin resource sharing
+  - `certifi` - SSL certificate verification
 
-## Installation & Setup
+## 📋 Prerequisites
 
-### Prerequisites
-- Python 3.7 or higher
-- MongoDB server (local or remote)
+- Python 3.8+
+- MongoDB Atlas account (free tier works fine)
+- Internet connection for MongoDB Atlas
 
-### Installation Steps
+## 🚀 Quick Start
 
-1. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Configure MongoDB Connection**
-   - Update `config.py` if using non-default MongoDB settings
-   - Default configuration connects to `localhost:27017`
-   - Database name: `concert_billing`
-
-3. **Start MongoDB Service**
-   ```bash
-   # On Ubuntu/Debian
-   sudo systemctl start mongod
-   
-   # On macOS with Homebrew
-   brew services start mongodb-community
-   
-   # Using Docker
-   docker run -d -p 27017:27017 --name mongodb mongo
-   ```
-
-## Usage
-
-### Running the Main Application
-
+### 1. Clone the Repository
 ```bash
-python main.py
+cd /workspaces/pymongo
 ```
 
-This will:
-- Create sample data (concerts, customers, bookings, invoices)
-- Demonstrate all CRUD operations
-- Execute various aggregation queries
-- Display comprehensive analytics reports
+### 2. Configure Environment Variables
 
-### Running Tests
+Your `.env.local` file should contain:
+```env
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+MONGO_DB=concert_data
+```
 
+**Important MongoDB Atlas Setup:**
+1. Go to MongoDB Atlas Dashboard
+2. Navigate to Network Access
+3. Add your IP address (or `0.0.0.0/0` for development)
+4. Verify your database user credentials
+
+### 3. Install Dependencies
 ```bash
-python test_billing_system.py
+pip install -r requirements.txt
 ```
 
-### Using Individual Components
+### 4. Initialize Database
+```bash
+python init_db.py
+```
 
+This script will:
+- Create necessary collections (concerts, bookings, customers)
+- Set up database indexes for optimal performance
+- Insert sample data (6 concerts, 4 sample bookings)
+
+### 5. Run the Application
+
+**Option A: Using the start script**
+```bash
+./start.sh
+```
+
+**Option B: Direct Python command**
+```bash
+python app.py
+```
+
+The application will start on `http://localhost:5000`
+
+## 📱 Application Structure
+
+```
+/workspaces/pymongo/
+├── app.py                 # Main Flask application with routes
+├── config.py             # Database configuration
+├── init_db.py           # Database initialization script
+├── requirements.txt     # Python dependencies
+├── .env.local          # Environment variables (MongoDB credentials)
+├── start.sh            # Quick start script
+├── templates/          # HTML templates
+│   ├── base.html          # Base template with navigation
+│   ├── index.html         # Dashboard with statistics
+│   ├── concerts.html      # Concert management (CRUD)
+│   ├── bookings.html      # Booking management (CRUD)
+│   └── analytics.html     # Analytics with aggregations
+└── static/
+    └── css/
+        └── style.css      # Application styling
+```
+
+## 🎯 Application Pages
+
+### 1. Dashboard (`/`)
+- Overview statistics using MongoDB aggregations
+- Total concerts, bookings, revenue
+- Quick action buttons
+- Feature highlights
+
+### 2. Concerts Management (`/concerts`)
+- **View**: Grid display of all concerts
+- **Add**: Modal form to create new concerts
+- **Edit**: Update concert details
+- **Delete**: Remove concerts (with booking validation)
+- Real-time seat availability tracking
+
+### 3. Bookings Management (`/bookings`)
+- **View**: Table display with concert details (using `$lookup`)
+- **Add**: Create new bookings with live price calculation
+- **Edit**: Modify booking details
+- **Cancel**: Delete bookings and restore seats
+- Automatic seat inventory management
+
+### 4. Analytics (`/analytics`)
+Advanced MongoDB aggregation pipelines:
+- Revenue by concert with `$group` and `$sum`
+- Concert occupancy using `$lookup` and `$divide`
+- Top customers with `$sort` and `$limit`
+- Bookings by status with conditional aggregation
+- Revenue by genre using `$match` and `$group`
+- Monthly trends with `$dateToString`
+
+## 🔧 API Endpoints
+
+### Concerts
+- `GET /concerts` - List all concerts
+- `POST /concerts/add` - Create new concert
+- `POST /concerts/edit/<id>` - Update concert
+- `POST /concerts/delete/<id>` - Delete concert
+- `GET /concerts/get/<id>` - Get concert JSON (AJAX)
+
+### Bookings
+- `GET /bookings` - List all bookings
+- `POST /bookings/add` - Create new booking
+- `POST /bookings/edit/<id>` - Update booking
+- `POST /bookings/delete/<id>` - Cancel booking
+- `GET /bookings/get/<id>` - Get booking JSON (AJAX)
+
+### Analytics
+- `GET /analytics` - View all analytics dashboards
+
+## 🔍 MongoDB Aggregation Examples
+
+### Revenue by Concert
 ```python
-from crud_operations import ConcertCRUD, CustomerCRUD
-from models import Concert, Customer
-from analytics import BillingAnalytics
-from datetime import datetime
-
-# Create a new concert
-concert_crud = ConcertCRUD()
-concert = Concert(
-    name="Rock Festival 2024",
-    artist="The Rolling Stones", 
-    venue="Madison Square Garden",
-    date=datetime(2024, 6, 15, 20, 0),
-    ticket_prices={"VIP": 250.0, "Regular": 120.0},
-    total_seats=1000
-)
-concert_id = concert_crud.create_concert(concert)
-
-# Get analytics
-analytics = BillingAnalytics()
-revenue_data = analytics.get_revenue_by_concert()
+pipeline = [
+    {
+        '$lookup': {
+            'from': 'concerts',
+            'localField': 'concert_object_id',
+            'foreignField': '_id',
+            'as': 'concert_details'
+        }
+    },
+    {
+        '$group': {
+            '_id': '$concert_id',
+            'total_revenue': {'$sum': '$total_amount'},
+            'total_tickets_sold': {'$sum': '$num_tickets'}
+        }
+    }
+]
 ```
 
-## Data Models
+### Concert Occupancy Rate
+```python
+pipeline = [
+    {
+        '$lookup': {
+            'from': 'bookings',
+            'localField': 'concert_id_str',
+            'foreignField': 'concert_id',
+            'as': 'bookings'
+        }
+    },
+    {
+        '$addFields': {
+            'occupancy_rate': {
+                '$multiply': [
+                    {'$divide': [{'$sum': '$bookings.num_tickets'}, '$total_seats']},
+                    100
+                ]
+            }
+        }
+    }
+]
+```
 
-### Concert
-- Event details (name, artist, venue, date)
-- Ticket pricing tiers
-- Seat availability tracking
+## 🐛 Troubleshooting
 
-### Customer  
-- Personal information (name, email, phone, address)
-- Registration timestamps
+### MongoDB Connection Issues
 
-### Booking
-- Links customers to concerts
-- Ticket type and quantity
-- Pricing and total calculations
-- Status tracking (confirmed, cancelled, refunded)
+**SSL Handshake Error:**
+This is typically an OpenSSL version issue in the dev container. The app includes `tlsAllowInvalidCertificates=True` for development.
 
-### Invoice
-- Billing information for bookings
-- Tax calculations
-- Payment status tracking
-- Unique invoice numbering
+**IP Whitelist:**
+```
+1. Go to MongoDB Atlas → Network Access
+2. Add your IP or 0.0.0.0/0 for development
+3. Wait 1-2 minutes for changes to propagate
+```
 
-## MongoDB Aggregation Queries
+**Authentication Failed:**
+- Verify username/password in `.env.local`
+- Check that the database user has read/write permissions
+- Ensure special characters in password are URL-encoded
 
-The system includes sophisticated aggregation pipelines for:
+### Application Won't Start
+```bash
+# Reinstall dependencies
+pip install -r requirements.txt --force-reinstall
 
-- **Revenue Analysis**: Total revenue by concert, venue, and time periods
-- **Customer Insights**: Booking patterns and spending behavior
-- **Performance Metrics**: Concert popularity and ticket distribution
-- **Financial Reporting**: Payment status summaries and revenue forecasting
+# Check Python version
+python --version  # Should be 3.8+
 
-## Configuration
+# Verify Flask installation
+python -c "import flask; print(flask.__version__)"
+```
 
-### Environment Variables
-- `MONGODB_HOST`: MongoDB server hostname (default: localhost)
-- `MONGODB_PORT`: MongoDB server port (default: 27017)  
-- `DATABASE_NAME`: Database name (default: concert_billing)
+## 🎨 Customization
 
-### Database Collections
-- `concerts`: Concert event information
-- `customers`: Customer profiles
-- `bookings`: Ticket booking records
-- `invoices`: Billing and payment data
+### Adding New Concert Genres
+Edit `templates/concerts.html` and add options to the genre field.
 
-## Error Handling
+### Changing Color Theme
+Modify CSS variables in `static/css/style.css`:
+```css
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    /* ... */
+}
+```
 
-The system includes comprehensive error handling for:
-- Database connection failures
-- Invalid data inputs
-- Document not found scenarios
-- MongoDB operation errors
+### Adding New Aggregations
+Add new pipelines in `app.py` under the `/analytics` route.
 
-## Sample Output
+## 📊 Database Schema
 
-When running `main.py`, you'll see:
+### Concerts Collection
+```json
+{
+  "_id": ObjectId,
+  "name": "Concert Name",
+  "artist": "Artist Name",
+  "venue": "Venue Name",
+  "date": "YYYY-MM-DD",
+  "time": "HH:MM",
+  "ticket_price": 125.00,
+  "total_seats": 500,
+  "available_seats": 450,
+  "genre": "Rock",
+  "description": "Concert description",
+  "created_at": ISODate
+}
+```
 
-1. **Sample Data Creation**: Concerts, customers, and bookings
-2. **CRUD Operations**: Create, read, update, delete demonstrations
-3. **Analytics Reports**: Revenue analysis, customer statistics, popular concerts
-4. **Payment Tracking**: Invoice generation and payment processing
+### Bookings Collection
+```json
+{
+  "_id": ObjectId,
+  "concert_id": "concert_object_id_as_string",
+  "customer_name": "Customer Name",
+  "customer_email": "email@example.com",
+  "customer_phone": "555-0100",
+  "num_tickets": 2,
+  "ticket_price": 125.00,
+  "total_amount": 250.00,
+  "booking_date": ISODate,
+  "status": "confirmed"
+}
+```
 
-## Contributing
+## 🤝 Contributing
 
-This is an educational project demonstrating MongoDB operations with Python. Feel free to extend it with additional features like:
+Feel free to fork this project and submit pull requests for any improvements!
 
-- Web interface using Flask/Django
-- Advanced booking validations
-- Email notifications
-- Reporting dashboard
-- Multi-currency support
+## 📝 License
 
-## License
+This project is open source and available for educational purposes.
 
-This project is for educational purposes and demonstrates MongoDB CRUD operations and aggregation functions in a practical billing system context.
+## 👨‍💻 Author
+
+Built with ❤️ using Flask and MongoDB
+
+## 🎉 Acknowledgments
+
+- Flask framework for the awesome Python web framework
+- MongoDB for the powerful database and aggregation pipeline
+- Font Awesome for beautiful icons
+- GitHub Codespaces for the development environment
+
+---
+
+**Happy Coding! 🚀**
